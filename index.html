@@ -41,9 +41,53 @@
     <style>
         body {
             background-color: #0a0914;
+            background-image: url('img/mystic_background.jpg');
+            background-size: 600px;
+            background-repeat: repeat;
+            background-attachment: fixed;
             color: #e2e8f0;
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            opacity: 0.85;
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        @media (min-width: 768px) {
+            .hero-banner { height: 200px; }
+        }
+
+        /* Suit icon styling */
+        .suit-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Card back for lab */
+        .card-back-preview {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
         h1, h2, h3, h4, .font-mystic {
             font-family: 'Cinzel', serif;
@@ -116,6 +160,8 @@
             <h1 class="text-2xl font-bold text-center gold-gradient-text tracking-wider">Tarot RWS</h1>
         </div>
     </header>
+
+    <img src="img/hero_banner.jpg" alt="Tarot místico - banner celestial" class="hero-banner" loading="eager">
 
     <main class="w-full max-w-3xl mx-auto p-4 md:p-6">
         
@@ -215,19 +261,31 @@
 
             <div class="space-y-8 mt-8 mb-6">
                 <div>
-                    <h4 class="text-xl font-mystic text-red-400 mb-3 flex items-center gap-2"><span class="text-2xl">🔥</span> Catálogo de Bastos</h4>
+                    <h4 class="text-xl font-mystic text-red-400 mb-3 flex items-center gap-3">
+                        <img src="img/suit_icons.jpg" alt="Bastos" class="suit-icon" style="object-position: 0 0;">
+                        Catálogo de Bastos
+                    </h4>
                     <div class="space-y-3" id="bastos-container"></div>
                 </div>
                 <div>
-                    <h4 class="text-xl font-mystic text-blue-400 mb-3 flex items-center gap-2"><span class="text-2xl">💧</span> Catálogo de Copas</h4>
+                    <h4 class="text-xl font-mystic text-blue-400 mb-3 flex items-center gap-3">
+                        <img src="img/suit_icons.jpg" alt="Copas" class="suit-icon" style="object-position: 100% 0;">
+                        Catálogo de Copas
+                    </h4>
                     <div class="space-y-3" id="copas-container"></div>
                 </div>
                 <div>
-                    <h4 class="text-xl font-mystic text-gray-300 mb-3 flex items-center gap-2"><span class="text-2xl">🌪️</span> Catálogo de Espadas</h4>
+                    <h4 class="text-xl font-mystic text-gray-300 mb-3 flex items-center gap-3">
+                        <img src="img/suit_icons.jpg" alt="Espadas" class="suit-icon" style="object-position: 0 100%;">
+                        Catálogo de Espadas
+                    </h4>
                     <div class="space-y-3" id="espadas-container"></div>
                 </div>
                 <div>
-                    <h4 class="text-xl font-mystic text-amber-500 mb-3 flex items-center gap-2"><span class="text-2xl">🌍</span> Catálogo de Oros</h4>
+                    <h4 class="text-xl font-mystic text-amber-500 mb-3 flex items-center gap-3">
+                        <img src="img/suit_icons.jpg" alt="Oros" class="suit-icon" style="object-position: 100% 100%;">
+                        Catálogo de Oros
+                    </h4>
                     <div class="space-y-3" id="oros-container"></div>
                 </div>
             </div>
@@ -370,8 +428,12 @@
             <div class="bg-mystic-800 p-6 rounded-2xl border border-mystic-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-mystic-700/20 via-transparent to-transparent pointer-events-none"></div>
                 <h3 class="font-mystic text-2xl text-white mb-2 relative z-10">Laboratorio de Lectura</h3>
-                <p class="text-sm text-gray-400 mb-6 relative z-10">Genera una tirada aleatoria para practicar conexiones.</p>
+                <p class="text-sm text-gray-400 mb-4 relative z-10">Genera una tirada aleatoria para practicar conexiones.</p>
                 
+                <div class="relative z-10 mb-6">
+                    <img src="img/card_back.jpg" alt="Reverso de carta de tarot" class="card-back-preview mx-auto">
+                </div>
+
                 <button id="btn-draw" class="relative z-10 bg-gradient-to-r from-mystic-700 to-purple-800 hover:from-mystic-gold/80 hover:to-amber-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all transform active:scale-95 duration-200">
                     Tirada Rápida de 3 Cartas
                 </button>
