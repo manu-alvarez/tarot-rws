@@ -75,6 +75,8 @@
             box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
         }
 
+        .card-img { width: 100px; min-width: 100px; height: auto; border: 2px solid rgba(212,175,55,0.3); object-fit: contain; }
+
         /* Card back for lab */
         .card-back-preview {
             width: 80px;
@@ -289,28 +291,28 @@
             <div class="space-y-8 mt-8 mb-6">
                 <div>
                     <h4 class="text-xl font-mystic text-red-400 mb-3 flex items-center gap-3">
-                        <img src="img/suit_icons.jpg" alt="Bastos" class="suit-icon" style="object-position: 0 0;">
+                        <img src="img/icon_bastos.jpg" alt="Bastos" class="suit-icon">
                         Catálogo de Bastos
                     </h4>
                     <div class="space-y-3" id="bastos-container"></div>
                 </div>
                 <div>
                     <h4 class="text-xl font-mystic text-blue-400 mb-3 flex items-center gap-3">
-                        <img src="img/suit_icons.jpg" alt="Copas" class="suit-icon" style="object-position: 100% 0;">
+                        <img src="img/icon_copas.jpg" alt="Copas" class="suit-icon">
                         Catálogo de Copas
                     </h4>
                     <div class="space-y-3" id="copas-container"></div>
                 </div>
                 <div>
                     <h4 class="text-xl font-mystic text-gray-300 mb-3 flex items-center gap-3">
-                        <img src="img/suit_icons.jpg" alt="Espadas" class="suit-icon" style="object-position: 0 100%;">
+                        <img src="img/icon_espadas.jpg" alt="Espadas" class="suit-icon">
                         Catálogo de Espadas
                     </h4>
                     <div class="space-y-3" id="espadas-container"></div>
                 </div>
                 <div>
                     <h4 class="text-xl font-mystic text-amber-500 mb-3 flex items-center gap-3">
-                        <img src="img/suit_icons.jpg" alt="Oros" class="suit-icon" style="object-position: 100% 100%;">
+                        <img src="img/icon_oros.jpg" alt="Oros" class="suit-icon">
                         Catálogo de Oros
                     </h4>
                     <div class="space-y-3" id="oros-container"></div>
@@ -664,7 +666,36 @@
             ]
         };
 
+        // === CARD IMAGE MAP (Wikimedia Commons, public domain) ===
+        const cardImgMap = {
+            '0. El Loco':'RWS_Tarot_00_Fool.jpg','I. El Mago':'RWS_Tarot_01_Magician.jpg',
+            'II. La Sacerdotisa':'RWS_Tarot_02_High_Priestess.jpg','III. La Emperatriz':'RWS_Tarot_03_Empress.jpg',
+            'IV. El Emperador':'RWS_Tarot_04_Emperor.jpg','V. El Hierofante':'RWS_Tarot_05_Hierophant.jpg',
+            'VI. Los Enamorados':'RWS_Tarot_06_Lovers.jpg','VII. El Carro':'RWS_Tarot_07_Chariot.jpg',
+            'VIII. La Fuerza':'RWS_Tarot_08_Strength.jpg','IX. El Ermitaño':'RWS_Tarot_09_Hermit.jpg',
+            'X. Rueda de la Fortuna':'RWS_Tarot_10_Wheel_of_Fortune.jpg','XI. La Justicia':'RWS_Tarot_11_Justice.jpg',
+            'XII. El Colgado':'RWS_Tarot_12_Hanged_Man.jpg','XIII. La Muerte':'RWS_Tarot_13_Death.jpg',
+            'XIV. La Templanza':'RWS_Tarot_14_Temperance.jpg','XV. El Diablo':'RWS_Tarot_15_Devil.jpg',
+            'XVI. La Torre':'RWS_Tarot_16_Tower.jpg','XVII. La Estrella':'RWS_Tarot_17_Star.jpg',
+            'XVIII. La Luna':'RWS_Tarot_18_Moon.jpg','XIX. El Sol':'RWS_Tarot_19_Sun.jpg',
+            'XX. El Juicio':'RWS_Tarot_20_Judgement.jpg','XXI. El Mundo':'RWS_Tarot_21_World.jpg'
+        };
+        function getMinorImg(suit, idx) {
+            const suitMap = {bastos:'Wands',copas:'Cups',espadas:'Swords',oros:'Pents'};
+            return (suitMap[suit]||'') + String(idx).padStart(2,'0') + '.jpg';
+        }
+        function cardImgUrl(name, suit, idx) {
+            const file = cardImgMap[name] || (suit ? getMinorImg(suit, idx) : '');
+            return file ? `https://commons.wikimedia.org/wiki/Special:FilePath/${file}?width=200` : '';
+        }
+
+        // Assign images to minors
+        ['bastos','copas','espadas','oros'].forEach(suit => {
+            menores[suit].forEach((c, i) => { c._suit = suit; c._idx = i + 1; });
+        });
+
         function createCardHTML(card, isMajor = false) {
+            const imgUrl = cardImgUrl(card.n, card._suit, card._idx);
             return `
                 <details class="bg-mystic-800 rounded-lg cursor-pointer">
                     <summary class="p-4 font-mystic text-mystic-gold flex justify-between items-center outline-none">
@@ -672,9 +703,14 @@
                         <svg class="w-5 h-5 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="p-4 pt-0 text-sm border-t border-mystic-gold/10">
-                        ${card.sym ? `<p class="mb-2 text-xs text-gray-400 italic">${card.sym}</p>` : ''}
-                        <p class="mb-2"><strong class="text-white">Núcleo:</strong> <span class="text-gray-300">${card.core}</span></p>
-                        <p class="mb-2"><strong class="text-red-400">Sombra:</strong> <span class="text-gray-400">${card.shadow}</span></p>
+                        <div class="flex gap-4">
+                            ${imgUrl ? `<img src="${imgUrl}" alt="${card.n}" loading="lazy" class="card-img rounded-lg shadow-lg" onerror="this.style.display='none'">` : ''}
+                            <div class="flex-1">
+                                ${card.sym ? `<p class="mb-2 text-xs text-gray-400 italic">${card.sym}</p>` : ''}
+                                <p class="mb-2"><strong class="text-white">Núcleo:</strong> <span class="text-gray-300">${card.core}</span></p>
+                                <p class="mb-2"><strong class="text-red-400">Sombra:</strong> <span class="text-gray-400">${card.shadow}</span></p>
+                            </div>
+                        </div>
                         ${card.read ? `<p class="mt-2 text-blue-200 border-t border-mystic-700 pt-2">${card.read}</p>` : ''}
                         ${card.note ? `<p class="mt-2 text-xs text-mystic-golddim italic border-t border-mystic-700 pt-2">${card.note}</p>` : ''}
                     </div>
