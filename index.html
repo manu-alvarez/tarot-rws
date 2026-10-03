@@ -106,6 +106,16 @@
         .study-item.completed label { text-decoration: line-through; color: rgba(212, 175, 55, 0.5); }
         .study-progress-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
         .study-progress-fill { height: 100%; background: linear-gradient(to right, #d4af37, #f3e5ab); border-radius: 3px; transition: width 0.5s ease; }
+
+        /* Search */
+        .search-input { background: rgba(26, 22, 43, 0.8); border: 1px solid rgba(212, 175, 55, 0.3); color: #e2e8f0; outline: none; transition: border-color 0.3s; }
+        .search-input:focus { border-color: #d4af37; box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+        .search-input::placeholder { color: rgba(255,255,255,0.3); }
+        .consulta-card { transition: all 0.3s ease; cursor: pointer; }
+        .consulta-card:hover { border-color: rgba(212, 175, 55, 0.6); }
+        .consulta-card.selected { border-color: #d4af37; background: linear-gradient(180deg, rgba(45, 27, 78, 0.5) 0%, rgba(10, 9, 20, 0.9) 100%); }
+        .consulta-card .card-full-info { display: none; }
+        .consulta-card.selected .card-full-info { display: block; animation: fadeIn 0.3s ease; }
         h1, h2, h3, h4, .font-mystic {
             font-family: 'Cinzel', serif;
         }
@@ -507,25 +517,56 @@
             </div>
         </section>
 
+        <section id="tab-consulta" class="tab-content space-y-6">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-mystic text-mystic-gold mb-2">Consulta de Cartas</h2>
+                <p class="text-sm text-gray-400">Busca cualquier carta por nombre para ver su significado completo. Ideal para interpretar tiradas físicas.</p>
+            </div>
+
+            <div class="relative">
+                <input type="text" id="card-search" class="search-input w-full rounded-xl px-4 py-3 pl-11 text-sm" placeholder="Buscar carta... (ej: El Mago, Tres de Copas, Rey)">
+                <svg class="w-5 h-5 text-mystic-gold/50 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-2">
+                <button onclick="filterConsulta('todos')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-mystic-gold/30 text-mystic-gold hover:bg-mystic-gold/10 transition-colors">Todas</button>
+                <button onclick="filterConsulta('mayores')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-purple-500/30 text-purple-400 hover:bg-purple-500/10 transition-colors">Mayores</button>
+                <button onclick="filterConsulta('bastos')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">🔥 Bastos</button>
+                <button onclick="filterConsulta('copas')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors">💧 Copas</button>
+                <button onclick="filterConsulta('espadas')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-400/30 text-gray-300 hover:bg-gray-500/10 transition-colors">🌪️ Espadas</button>
+                <button onclick="filterConsulta('oros')" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-colors">🌍 Oros</button>
+            </div>
+
+            <p class="text-xs text-gray-500" id="consulta-count">78 cartas disponibles</p>
+
+            <div id="consulta-results" class="space-y-3">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
     </main>
 
     <nav class="fixed bottom-0 w-full glass-panel z-50 px-2 pb-safe pt-2">
         <div class="flex justify-between items-center max-w-md mx-auto">
             <button onclick="switchTab('manual')" class="nav-btn active flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-mystic-gold transition-colors" data-target="tab-manual">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                <span class="text-[10px] uppercase font-bold tracking-widest">Manual</span>
+                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Manual</span>
             </button>
             <button onclick="switchTab('arcanos')" class="nav-btn flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-mystic-gold transition-colors" data-target="tab-arcanos">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                <span class="text-[10px] uppercase font-bold tracking-widest">Arcanos</span>
+                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Arcanos</span>
+            </button>
+            <button onclick="switchTab('consulta')" class="nav-btn flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-mystic-gold transition-colors" data-target="tab-consulta">
+                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Consulta</span>
             </button>
             <button onclick="switchTab('tiradas')" class="nav-btn flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-mystic-gold transition-colors" data-target="tab-tiradas">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                <span class="text-[10px] uppercase font-bold tracking-widest">Tiradas</span>
+                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Tiradas</span>
             </button>
             <button onclick="switchTab('practica')" class="nav-btn flex-1 flex flex-col items-center p-2 text-gray-500 hover:text-mystic-gold transition-colors" data-target="tab-practica">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                <span class="text-[10px] uppercase font-bold tracking-widest">Práctica</span>
+                <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <span class="text-[9px] uppercase font-bold tracking-widest">Práctica</span>
             </button>
         </div>
     </nav>
@@ -558,68 +599,68 @@
 
         const menores = {
             bastos: [
-                { n: "As de Bastos", core: "Iniciativa, chispa creativa, nueva energía", shadow: "Impulsividad, falta de dirección", note: "Waite: Creación, invención, origen." },
-                { n: "Dos de Bastos", core: "Planificación, visión, decisión", shadow: "Indecisión, miedo a salir", note: "" },
-                { n: "Tres de Bastos", core: "Expansión, progreso, espera informada", shadow: "Impaciencia, falta de previsión", note: "" },
-                { n: "Cuatro de Bastos", core: "Celebración, estabilidad, comunidad", shadow: "Estancamiento, complacencia", note: "" },
-                { n: "Cinco de Bastos", core: "Competencia, fricción, desacuerdo", shadow: "Conflicto innecesario", note: "" },
-                { n: "Seis de Bastos", core: "Triunfo, reconocimiento, avance", shadow: "Arrogancia, dependencia de aprobación", note: "" },
-                { n: "Siete de Bastos", core: "Defensa, perseverancia, postura firme", shadow: "Desconfianza, resistencia excesiva", note: "" },
-                { n: "Ocho de Bastos", core: "Velocidad, mensajes, movimiento", shadow: "Prisa, dispersión, malentendidos", note: "" },
-                { n: "Nueve de Bastos", core: "Persistencia, límites, experiencia", shadow: "Agotamiento, ansiedad", note: "" },
-                { n: "Diez de Bastos", core: "Responsabilidad, carga, cierre", shadow: "Sobrecarga, no delegar", note: "" },
-                { n: "Sota de Bastos", core: "Entusiasmo, noticia, exploración", shadow: "Inmadurez, impulsividad", note: "" },
-                { n: "Caballero de Bastos", core: "Pasión, aventura, avance", shadow: "Impaciencia, imprudencia", note: "" },
-                { n: "Reina de Bastos", core: "Confianza, carisma, determinación", shadow: "Celos, control", note: "" },
-                { n: "Rey de Bastos", core: "Liderazgo, visión, emprendimiento", shadow: "Dominancia, arrogancia", note: "" }
+                { n: "As de Bastos", sym: "Mano surgiendo de nube, vara con brotes verdes, castillo lejano.", core: "Iniciativa, chispa creativa, nueva energía", shadow: "Impulsividad, falta de dirección", read: "Un inicio con fuerza y potencial real. Canaliza la energía antes de que se disperse.", note: "Elemento Fuego: acción, pasión, voluntad." },
+                { n: "Dos de Bastos", sym: "Hombre con globo terráqueo, dos bastos fijos, mar al fondo.", core: "Planificación, visión, decisión", shadow: "Indecisión, miedo a salir", read: "Tienes el mapa pero aún no has dado el paso. Evalúa y lánzate." },
+                { n: "Tres de Bastos", sym: "Figura de espaldas mirando al mar, barcos partiendo, tres bastos.", core: "Expansión, progreso, espera informada", shadow: "Impaciencia, falta de previsión", read: "Lo que sembraste empieza a moverse. Mantén la visión amplia." },
+                { n: "Cuatro de Bastos", sym: "Guirnaldas, dos figuras celebrando, castillo al fondo, dosel.", core: "Celebración, estabilidad, comunidad", shadow: "Estancamiento, complacencia", read: "Momento de celebrar un logro o hito. Base sólida para construir." },
+                { n: "Cinco de Bastos", sym: "Cinco jóvenes luchando con bastos, caos aparente.", core: "Competencia, fricción, desacuerdo", shadow: "Conflicto innecesario, ego", read: "No todo conflicto es destructivo; puede motivar. Elige tus batallas." },
+                { n: "Seis de Bastos", sym: "Jinete con corona de laurel, multitud que lo aclama.", core: "Triunfo, reconocimiento, avance", shadow: "Arrogancia, dependencia de aprobación", read: "Victoria merecida. Disfrútala sin olvidar que el camino sigue." },
+                { n: "Siete de Bastos", sym: "Hombre en posición elevada defendiéndose con un basto, seis bastos desde abajo.", core: "Defensa, perseverancia, postura firme", shadow: "Desconfianza, resistencia excesiva", read: "Mantén tu posición. Tienes la ventaja si no cedes ante la presión." },
+                { n: "Ocho de Bastos", sym: "Ocho bastos volando por un cielo despejado sobre paisaje verde.", core: "Velocidad, mensajes, movimiento", shadow: "Prisa, dispersión, malentendidos", read: "Las cosas se aceleran. Noticias, viajes o cambios rápidos en camino." },
+                { n: "Nueve de Bastos", sym: "Hombre herido apoyado en un basto, ocho bastos como barrera detrás.", core: "Persistencia, límites, experiencia", shadow: "Agotamiento, hipervigilancia", read: "Casi llegas. El cansancio es real, pero la meta está cerca. No abandones." },
+                { n: "Diez de Bastos", sym: "Figura cargando diez bastos con dificultad, pueblo a lo lejos.", core: "Responsabilidad, carga, cierre", shadow: "Sobrecarga, no delegar, martirio", read: "Estás llevando demasiado. Delega, simplifica o acepta que el ciclo termina." },
+                { n: "Sota de Bastos", sym: "Joven con basto en terreno desértico, mirando la vara con curiosidad.", core: "Entusiasmo, noticia, exploración", shadow: "Inmadurez, impulsividad", read: "Mensaje de acción o nueva oportunidad. Energía joven e inquieta." },
+                { n: "Caballero de Bastos", sym: "Jinete a galope con basto, paisaje desértico, capa ondeando.", core: "Pasión, aventura, avance impulsivo", shadow: "Impaciencia, imprudencia, falta de plan", read: "Acción directa y valiente, pero asegúrate de saber a dónde vas." },
+                { n: "Reina de Bastos", sym: "Mujer en trono con girasoles, gato negro, basto en mano.", core: "Confianza, carisma, determinación", shadow: "Celos, control, intensidad excesiva", read: "Lidera con pasión y generosidad. Tu energía inspira a quienes te rodean." },
+                { n: "Rey de Bastos", sym: "Rey en trono con salamandra, basto floreciente, capa roja.", core: "Liderazgo, visión, emprendimiento", shadow: "Dominancia, arrogancia, impaciencia", read: "Autoridad natural y visión a largo plazo. Dirige sin aplastar." }
             ],
             copas: [
-                { n: "As de Copas", core: "Nuevo sentimiento, amor, apertura", shadow: "Idealización, represión", note: "" },
-                { n: "Dos de Copas", core: "Conexión mutua, acuerdo, unión", shadow: "Dependencia, desequilibrio", note: "" },
-                { n: "Tres de Copas", core: "Amistad, celebración, comunidad", shadow: "Chismes, comparación", note: "" },
-                { n: "Cuatro de Copas", core: "Contemplación, apatía, oportunidad perdida", shadow: "Desconexión", note: "" },
-                { n: "Cinco de Copas", core: "Pérdida, duelo, arrepentimiento", shadow: "Fijarse en lo perdido", note: "" },
-                { n: "Seis de Copas", core: "Recuerdo, inocencia, apoyo", shadow: "Anclaje al pasado", note: "" },
-                { n: "Siete de Copas", core: "Opciones, fantasía, búsqueda", shadow: "Ilusión, dispersión", note: "" },
-                { n: "Ocho de Copas", core: "Retirada, búsqueda de sentido", shadow: "Huida, abandono", note: "" },
-                { n: "Nueve de Copas", core: "Satisfacción, deseo cumplido", shadow: "Complacencia, exceso", note: "" },
-                { n: "Diez de Copas", core: "Armonía, felicidad compartida", shadow: "Idealización familiar", note: "" },
-                { n: "Sota de Copas", core: "Mensaje emocional, sensibilidad", shadow: "Susceptibilidad, inmadurez", note: "Waite: Joven estudioso, servicio, reflexión." },
-                { n: "Caballero de Copas", core: "Romanticismo, idealismo, invitación", shadow: "Fantasía, inconsistencia", note: "" },
-                { n: "Reina de Copas", core: "Empatía, intuición, cuidado", shadow: "Límites difusos", note: "" },
-                { n: "Rey de Copas", core: "Equilibrio emocional, diplomacia", shadow: "Represión, frialdad", note: "" }
+                { n: "As de Copas", sym: "Mano de nube con copa desbordante, paloma con hostia, lirios en agua.", core: "Nuevo sentimiento, amor, apertura emocional", shadow: "Idealización, represión, expectativas irreales", read: "Se abre una puerta emocional. Recíbelo con el corazón abierto pero los ojos claros.", note: "Elemento Agua: emociones, intuición, relaciones." },
+                { n: "Dos de Copas", sym: "Hombre y mujer intercambiando copas, caduceo y león alado arriba.", core: "Conexión mutua, acuerdo, unión", shadow: "Dependencia, desequilibrio en la relación", read: "Vínculo genuino basado en respeto. Sociedad, amistad o amor correspondido." },
+                { n: "Tres de Copas", sym: "Tres mujeres brindando con copas, guirnaldas, frutas en el suelo.", core: "Amistad, celebración, comunidad", shadow: "Chismes, comparación, superficialidad", read: "Celebra con quienes te quieren bien. La alegría compartida sana." },
+                { n: "Cuatro de Copas", sym: "Joven bajo un árbol, brazos cruzados, tres copas delante, una ofrecida desde nube.", core: "Contemplación, apatía, oportunidad perdida", shadow: "Desconexión, indiferencia, autoabsorción", read: "Hay algo disponible que no estás viendo. Sal de tu cabeza un momento." },
+                { n: "Cinco de Copas", sym: "Figura de negro, tres copas derramadas, dos en pie detrás, puente y río.", core: "Pérdida, duelo, arrepentimiento", shadow: "Fijarse en lo perdido, autocompasión", read: "El dolor es válido, pero mira atrás: dos copas siguen en pie. No todo se perdió." },
+                { n: "Seis de Copas", sym: "Niño dando flor a otro niño, jardín con seis copas floridas, pueblo.", core: "Nostalgia, inocencia, apoyo, raíces", shadow: "Anclaje al pasado, inmadurez", read: "Algo del pasado regresa o influye. Puede ser sanador si no te ancla." },
+                { n: "Siete de Copas", sym: "Silueta ante siete copas flotantes con visiones: castillo, joyas, dragón, serpiente, rostro, corona, figura luminosa.", core: "Opciones, fantasía, ilusiones, búsqueda", shadow: "Dispersión, autoengaño, parálisis por opciones", read: "Muchas posibilidades, pero no todas son reales. Filtra antes de elegir." },
+                { n: "Ocho de Copas", sym: "Hombre alejándose de ocho copas apiladas, luna en eclipse, montañas.", core: "Retirada, búsqueda de sentido, dejar ir", shadow: "Huida, abandono, evitar confrontación", read: "A veces la valentia es irse. Busca lo que falta, aunque duela dejar lo conocido." },
+                { n: "Nueve de Copas", sym: "Hombre satisfecho sentado, brazos cruzados, nueve copas en arco detrás.", core: "Satisfacción, deseo cumplido, plenitud", shadow: "Complacencia, exceso, materialismo emocional", read: "Disfruta lo conseguido. Pero pregúntate si la satisfacción es profunda o superficial." },
+                { n: "Diez de Copas", sym: "Pareja con brazos abiertos, arcoíris de copas, niños jugando, casa.", core: "Armonía familiar, felicidad compartida, hogar", shadow: "Idealización familiar, presión por la perfección", read: "La felicidad plena es posible. No la sabotees buscando lo que falta." },
+                { n: "Sota de Copas", sym: "Joven con copa y pez asomando, terreno plano, mar al fondo.", core: "Mensaje emocional, sensibilidad, imaginación", shadow: "Susceptibilidad, inmadurez emocional", read: "Noticia o propuesta emocional. Persona joven, soñadora y creativa.", note: "Waite: Joven estudioso, servicio, reflexión." },
+                { n: "Caballero de Copas", sym: "Jinete sereno con copa, caballo blanco avanzando despacio, río.", core: "Romanticismo, idealismo, invitación", shadow: "Fantasía, inconsistencia, seducción vacía", read: "Llega una propuesta con encanto. Verifica si hay sustancia detrás de la belleza." },
+                { n: "Reina de Copas", sym: "Reina en trono sobre agua, copa cerrada ornamentada, querubines.", core: "Empatía, intuición profunda, cuidado", shadow: "Límites difusos, absorción emocional", read: "Confía en tu intuición. Cuida sin perderte en las emociones ajenas." },
+                { n: "Rey de Copas", sym: "Rey en trono flotando en mar, copa en una mano, cetro en otra, pez y barco.", core: "Equilibrio emocional, diplomacia, madurez", shadow: "Represión emocional, frialdad calculada", read: "Dominio de las emociones sin negarlas. Líder empático pero firme." }
             ],
             espadas: [
-                { n: "As de Espadas", core: "Claridad, verdad, corte, nueva idea", shadow: "Crueldad, juicio", note: "" },
-                { n: "Dos de Espadas", core: "Encrucijada, decisión bloqueada", shadow: "Evasión, ceguera parcial", note: "" },
-                { n: "Tres de Espadas", core: "Dolor, verdad dolorosa, separación", shadow: "Rumiación, autoataque", note: "" },
-                { n: "Cuatro de Espadas", core: "Descanso, recuperación, pausa", shadow: "Aislamiento, apatía", note: "" },
-                { n: "Cinco de Espadas", core: "Conflicto, pérdida, derrota parcial", shadow: "Venganza, culpa", note: "Waite: Degradación, destrucción, deshonor." },
-                { n: "Seis de Espadas", core: "Tránsito, alejamiento, calma", shadow: "Huida, evasión", note: "" },
-                { n: "Siete de Espadas", core: "Estrategia, astucia, información parcial", shadow: "Engaño, autoengaño", note: "" },
-                { n: "Ocho de Espadas", core: "Autolimitación, miedo", shadow: "Victimismo", note: "" },
-                { n: "Nueve de Espadas", core: "Ansiedad, insomnio, preocupación", shadow: "Rumia, miedo anticipatorio", note: "" },
-                { n: "Diez de Espadas", core: "Final doloroso, colapso, cierre", shadow: "Dramatización, estancamiento", note: "" },
-                { n: "Sota de Espadas", core: "Curiosidad, vigilancia, noticia", shadow: "Chismes, juicio apresurado", note: "" },
-                { n: "Caballero de Espadas", core: "Decisión rápida, confrontación", shadow: "Impaciencia, agresividad", note: "" },
-                { n: "Reina de Espadas", core: "Percepción, independencia, límites", shadow: "Frieza, crítica", note: "" },
-                { n: "Rey de Espadas", core: "Autoridad intelectual, juicio", shadow: "Rigidez, autoritarismo", note: "" }
+                { n: "As de Espadas", sym: "Mano de nube con espada coronada, ramas de olivo y palma.", core: "Claridad mental, verdad, corte, nueva idea", shadow: "Crueldad, juicio excesivo, frialdad", read: "Un momento de claridad que corta la confusión. Úsalo con justicia.", note: "Elemento Aire: mente, comunicación, verdad." },
+                { n: "Dos de Espadas", sym: "Mujer vendada con dos espadas cruzadas, mar y luna detrás.", core: "Encrucijada, decisión bloqueada, equilibrio tenso", shadow: "Evasión, ceguera voluntaria, parálisis", read: "Estás evitando ver algo. Quita la venda y decide, aunque duela." },
+                { n: "Tres de Espadas", sym: "Corazón atravesado por tres espadas, lluvia y nubes grises.", core: "Dolor, verdad dolorosa, separación, duelo", shadow: "Rumiación, autoataque, dramatización", read: "El dolor es real y necesario para sanar. Atraviesa la tormenta, no la esquives." },
+                { n: "Cuatro de Espadas", sym: "Caballero yacente en tumba, manos en oración, vidriera, tres espadas en muro.", core: "Descanso necesario, recuperación, pausa", shadow: "Aislamiento, apatía, evitar la vida", read: "Tu mente necesita silencio. Descansa para poder pensar con claridad después." },
+                { n: "Cinco de Espadas", sym: "Hombre recogiendo espadas, dos figuras derrotadas alejándose, cielo tormentoso.", core: "Conflicto, pérdida, victoria pírrica", shadow: "Venganza, humillación, culpa", read: "Ganar a este precio no vale la pena. Evalúa si el conflicto merece continuar.", note: "Waite: Degradación, destrucción, deshonor." },
+                { n: "Seis de Espadas", sym: "Barquero llevando a mujer y niño entre aguas turbulentas y calmadas.", core: "Tránsito, alejamiento, viaje hacia la calma", shadow: "Huida, evasión, resistencia a moverse", read: "Te alejas de lo doloroso. El viaje es difícil pero necesario. Mejor horizonte espera." },
+                { n: "Siete de Espadas", sym: "Hombre llevándose cinco espadas, dejando dos, campamento atrás.", core: "Estrategia, astucia, información parcial", shadow: "Engaño, autoengaño, deshonestidad", read: "¿Es estrategia legítima o estás tomando atajos? Revisa tus métodos." },
+                { n: "Ocho de Espadas", sym: "Mujer vendada, atada, rodeada de ocho espadas, agua a sus pies.", core: "Autolimitación, trampa mental, miedo", shadow: "Victimismo, impotencia aprendida", read: "Las ataduras son más mentales que reales. Puedes liberarte si eliges verlo." },
+                { n: "Nueve de Espadas", sym: "Persona sentada en cama, manos cubriendo rostro, nueve espadas en muro oscuro.", core: "Ansiedad, insomnio, preocupación nocturna", shadow: "Rumia, miedo anticipatorio, catastrofismo", read: "El sufrimiento es real pero amplificado por la mente. ¿Qué es hecho y qué es miedo?" },
+                { n: "Diez de Espadas", sym: "Figura boca abajo con diez espadas clavadas, cielo negro, amanecer al fondo.", core: "Final doloroso, colapso, punto más bajo", shadow: "Dramatización, resistencia al cierre", read: "Lo peor ya pasó. Mira el amanecer al fondo: después del fondo, solo se sube." },
+                { n: "Sota de Espadas", sym: "Joven con espada en alto, terreno accidentado, nubes y viento.", core: "Curiosidad, vigilancia, noticia mental", shadow: "Chismes, juicio apresurado, espionaje", read: "Mente aguda y observadora. Puede traer noticias que requieren análisis." },
+                { n: "Caballero de Espadas", sym: "Jinete a galope con espada en alto, nubes tormentosas, pájaros.", core: "Decisión rápida, confrontación directa, audacia", shadow: "Impaciencia, agresividad, falta de tacto", read: "Actúa con determinación pero no atropelles a nadie en el camino." },
+                { n: "Reina de Espadas", sym: "Reina en trono con espada, mariposa en corona, nubes, perfil severo.", core: "Percepción, independencia, límites claros", shadow: "Frialdad, crítica destructiva, aislamiento", read: "Ve la verdad con claridad. Establece límites sin perder la compasión." },
+                { n: "Rey de Espadas", sym: "Rey en trono con espada recta, mariposas, árboles y nubes.", core: "Autoridad intelectual, juicio, ética", shadow: "Rigidez, autoritarismo, desconexión emocional", read: "Juzga con imparcialidad y conocimiento. La justicia requiere cabeza y corazón." }
             ],
             oros: [
-                { n: "As de Oros", core: "Oportunidad material, semilla", shadow: "Avaricia, inseguridad", note: "" },
-                { n: "Dos de Oros", core: "Equilibrio, adaptación, multitarea", shadow: "Inestabilidad, sobrecarga", note: "" },
-                { n: "Tres de Oros", core: "Trabajo en equipo, aprendizaje", shadow: "Descoordinación", note: "" },
-                { n: "Cuatro de Oros", core: "Seguridad, ahorro, control", shadow: "Aferramiento, estancamiento", note: "" },
-                { n: "Cinco de Oros", core: "Escasez, exclusión, dificultad", shadow: "Aislamiento, vergüenza", note: "" },
-                { n: "Seis de Oros", core: "Generosidad, ayuda, reciprocidad", shadow: "Dependencia, desequilibrio", note: "" },
-                { n: "Siete de Oros", core: "Paciencia, evaluación, crecimiento", shadow: "Impaciencia, duda", note: "" },
-                { n: "Ocho de Oros", core: "Diligencia, aprendizaje, oficio", shadow: "Perfeccionismo, monotonía", note: "" },
-                { n: "Nueve de Oros", core: "Autonomía, disfrute, logro", shadow: "Complacencia, materialismo", note: "" },
-                { n: "Diez de Oros", core: "Legado, estabilidad, éxito", shadow: "Rigidez, carga familiar", note: "" },
-                { n: "Sota de Oros", core: "Estudio, noticia práctica, inicio", shadow: "Falta de enfoque", note: "" },
-                { n: "Caballero de Oros", core: "Constancia, método, fiabilidad", shadow: "Rutina, lentitud", note: "" },
-                { n: "Reina de Oros", core: "Práctica, cuidadora, generosa", shadow: "Sobreprotección, control", note: "Waite: Opulencia, seguridad, libertad." },
-                { n: "Rey de Oros", core: "Éxito, prosperidad, estabilidad", shadow: "Materialismo, terquedad", note: "" }
+                { n: "As de Oros", sym: "Mano de nube con moneda de pentáculo, jardín debajo, arco de flores.", core: "Oportunidad material, semilla, nuevo recurso", shadow: "Avaricia, inseguridad material", read: "Se presenta una oportunidad concreta. Planta bien la semilla y cuídala.", note: "Elemento Tierra: materia, cuerpo, recursos, trabajo." },
+                { n: "Dos de Oros", sym: "Joven haciendo malabares con dos pentáculos en lemniscato, barcos en mar agitado.", core: "Equilibrio, adaptación, gestión de recursos", shadow: "Inestabilidad, sobrecarga, indecisión", read: "Muchas cosas en el aire. Prioriza y fluye sin perder el centro." },
+                { n: "Tres de Oros", sym: "Artesano trabajando en catedral, dos figuras con planos, arco gótico.", core: "Trabajo en equipo, maestría, aprendizaje", shadow: "Descoordinación, falta de reconocimiento", read: "Colaboración productiva. El buen trabajo se construye con otros y con paciencia." },
+                { n: "Cuatro de Oros", sym: "Hombre aferrado a moneda, dos bajo los pies, una en la cabeza, ciudad detrás.", core: "Seguridad, ahorro, control de recursos", shadow: "Aferramiento, avaricia, miedo a perder", read: "Proteger lo tuyo es sabio; aferrarte por miedo te aísla y te empobrece." },
+                { n: "Cinco de Oros", sym: "Dos figuras en la nieve ante vidriera iluminada, harapos, muletas.", core: "Escasez, exclusión, dificultad material", shadow: "Aislamiento, vergüenza, no pedir ayuda", read: "La ayuda está más cerca de lo que crees. Mira la puerta iluminada." },
+                { n: "Seis de Oros", sym: "Mercader con balanza repartiendo monedas a mendigos.", core: "Generosidad, equilibrio en dar y recibir", shadow: "Dependencia, desequilibrio de poder, caridad interesada", read: "Da y recibe con equilibrio. Pregúntate en qué lado de la balanza estás." },
+                { n: "Siete de Oros", sym: "Campesino apoyado en azada mirando siete pentáculos en planta.", core: "Paciencia, evaluación, inversión a largo plazo", shadow: "Impaciencia, duda, rendimiento insuficiente", read: "Los frutos están creciendo. No arranques la planta por impaciencia; evalúa y ajusta." },
+                { n: "Ocho de Oros", sym: "Artesano tallando pentáculos con detalle, seis terminados, pueblo lejano.", core: "Diligencia, aprendizaje, perfeccionamiento del oficio", shadow: "Perfeccionismo, monotonía, obsesión con detalles", read: "El dominio se logra con repetición consciente. Sigue perfeccionando tu arte." },
+                { n: "Nueve de Oros", sym: "Mujer elegante en jardín abundante, halcón en mano, caracol, uvas.", core: "Autonomía, disfrute, logro personal", shadow: "Complacencia, materialismo, soledad elegida", read: "Has construido algo valioso por ti mismo. Disfruta el fruto de tu esfuerzo." },
+                { n: "Diez de Oros", sym: "Familia ante arco, anciano con perros, diez pentáculos en árbol genealógico.", core: "Legado, estabilidad familiar, éxito duradero", shadow: "Rigidez, carga familiar, conflictos de herencia", read: "Culminación material. Piensa en qué legado dejas y cómo cuidas lo construido." },
+                { n: "Sota de Oros", sym: "Joven sosteniendo pentáculo con admiración, paisaje verde y fértil.", core: "Estudio, noticia práctica, nuevo aprendizaje", shadow: "Falta de enfoque, soñar sin ejecutar", read: "Oportunidad de aprender algo práctico y valioso. Pon atención y compromiso." },
+                { n: "Caballero de Oros", sym: "Jinete inmóvil sobre caballo oscuro, pentáculo en mano, campo arado.", core: "Constancia, método, fiabilidad, paciencia", shadow: "Rutina, lentitud, resistencia al cambio", read: "Avanza despacio pero seguro. La constancia vence al talento sin disciplina." },
+                { n: "Reina de Oros", sym: "Reina en trono florido con pentáculo, conejo, jardín exuberante.", core: "Práctica, generosidad, abundancia, cuidado terrenal", shadow: "Sobreprotección, control material, posesividad", read: "Nutre lo tangible: hogar, salud, recursos. Tu generosidad crea abundancia.", note: "Waite: Opulencia, seguridad, libertad." },
+                { n: "Rey de Oros", sym: "Rey en trono con toros, pentáculo, armadura bajo manto, castillo y jardines.", core: "Éxito, prosperidad, estabilidad, visión práctica", shadow: "Materialismo, terquedad, obsesión con el control", read: "Maestro del mundo material. Usa tu éxito para construir algo que perdure." }
             ]
         };
 
@@ -631,10 +672,10 @@
                         <svg class="w-5 h-5 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </summary>
                     <div class="p-4 pt-0 text-sm border-t border-mystic-gold/10">
-                        ${isMajor ? `<p class="mb-2 text-xs text-gray-400 italic">${card.sym}</p>` : ''}
+                        ${card.sym ? `<p class="mb-2 text-xs text-gray-400 italic">${card.sym}</p>` : ''}
                         <p class="mb-2"><strong class="text-white">Núcleo:</strong> <span class="text-gray-300">${card.core}</span></p>
                         <p class="mb-2"><strong class="text-red-400">Sombra:</strong> <span class="text-gray-400">${card.shadow}</span></p>
-                        ${isMajor ? `<p class="mt-2 text-blue-200 border-t border-mystic-700 pt-2">${card.read}</p>` : ''}
+                        ${card.read ? `<p class="mt-2 text-blue-200 border-t border-mystic-700 pt-2">${card.read}</p>` : ''}
                         ${card.note ? `<p class="mt-2 text-xs text-mystic-golddim italic border-t border-mystic-700 pt-2">${card.note}</p>` : ''}
                     </div>
                 </details>
@@ -646,6 +687,71 @@
         document.getElementById('copas-container').innerHTML = menores.copas.map(c => createCardHTML(c)).join('');
         document.getElementById('espadas-container').innerHTML = menores.espadas.map(c => createCardHTML(c)).join('');
         document.getElementById('oros-container').innerHTML = menores.oros.map(c => createCardHTML(c)).join('');
+
+        // === CONSULTA / CARD SEARCH ===
+        const allCards = [
+            ...mayores.map(c => ({...c, suit: 'mayores', isMajor: true})),
+            ...menores.bastos.map(c => ({...c, suit: 'bastos'})),
+            ...menores.copas.map(c => ({...c, suit: 'copas'})),
+            ...menores.espadas.map(c => ({...c, suit: 'espadas'})),
+            ...menores.oros.map(c => ({...c, suit: 'oros'}))
+        ];
+
+        let currentFilter = 'todos';
+
+        function renderConsulta(searchTerm = '') {
+            const container = document.getElementById('consulta-results');
+            const term = searchTerm.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            
+            let filtered = allCards;
+            if (currentFilter !== 'todos') {
+                filtered = filtered.filter(c => c.suit === currentFilter);
+            }
+            if (term) {
+                filtered = filtered.filter(c => {
+                    const name = c.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    return name.includes(term);
+                });
+            }
+
+            document.getElementById('consulta-count').textContent = `${filtered.length} carta${filtered.length !== 1 ? 's' : ''} encontrada${filtered.length !== 1 ? 's' : ''}`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 italic text-center py-8">No se encontraron cartas con ese nombre.</p>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(card => `
+                <div class="consulta-card bg-mystic-800 border border-mystic-gold/20 rounded-xl p-4" onclick="this.classList.toggle('selected')">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mystic text-mystic-gold text-sm">${card.n}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full ${card.suit === 'mayores' ? 'bg-purple-900/50 text-purple-300' : card.suit === 'bastos' ? 'bg-red-900/30 text-red-400' : card.suit === 'copas' ? 'bg-blue-900/30 text-blue-400' : card.suit === 'espadas' ? 'bg-gray-700/50 text-gray-300' : 'bg-amber-900/30 text-amber-400'}">${card.suit === 'mayores' ? 'Mayor' : card.suit.charAt(0).toUpperCase() + card.suit.slice(1)}</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">${card.core}</p>
+                    <span class="text-[9px] text-mystic-gold/40 mt-1 block">▼ toca para ver detalle completo</span>
+                    <div class="card-full-info mt-3 space-y-2 text-sm border-t border-mystic-gold/10 pt-3">
+                        ${card.sym ? `<p class="text-xs text-gray-400 italic">${card.sym}</p>` : ''}
+                        <p><strong class="text-white">Núcleo:</strong> <span class="text-gray-300">${card.core}</span></p>
+                        <p><strong class="text-red-400">Sombra:</strong> <span class="text-gray-400">${card.shadow}</span></p>
+                        ${card.read ? `<p class="text-blue-200 border-t border-mystic-700 pt-2 mt-2">${card.read}</p>` : ''}
+                        ${card.note ? `<p class="text-xs text-mystic-golddim italic border-t border-mystic-700 pt-2">${card.note}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterConsulta = function(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('bg-mystic-gold/20'));
+            event.target.classList.add('bg-mystic-gold/20');
+            renderConsulta(document.getElementById('card-search').value);
+        };
+
+        document.getElementById('card-search').addEventListener('input', (e) => {
+            renderConsulta(e.target.value);
+        });
+
+        renderConsulta();
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
