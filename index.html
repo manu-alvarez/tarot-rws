@@ -89,6 +89,23 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
         }
+
+        /* Drawn card expand */
+        .drawn-card { cursor: pointer; transition: all 0.3s ease; }
+        .drawn-card:hover { border-color: rgba(212, 175, 55, 0.8); transform: translateY(-2px); }
+        .drawn-card .card-detail { display: none; }
+        .drawn-card.expanded .card-detail { display: block; animation: fadeIn 0.3s ease; }
+        .drawn-card.expanded { background: linear-gradient(180deg, rgba(45, 27, 78, 0.5) 0%, rgba(10, 9, 20, 0.9) 100%); }
+
+        /* History entry */
+        .history-entry { transition: all 0.3s ease; }
+        .history-entry:hover { border-color: rgba(212, 175, 55, 0.5); }
+
+        /* Study checkbox */
+        .study-check { accent-color: #d4af37; width: 18px; height: 18px; cursor: pointer; }
+        .study-item.completed label { text-decoration: line-through; color: rgba(212, 175, 55, 0.5); }
+        .study-progress-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+        .study-progress-fill { height: 100%; background: linear-gradient(to right, #d4af37, #f3e5ab); border-radius: 3px; transition: width 0.5s ease; }
         h1, h2, h3, h4, .font-mystic {
             font-family: 'Cinzel', serif;
         }
@@ -428,53 +445,65 @@
             <div class="bg-mystic-800 p-6 rounded-2xl border border-mystic-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)] text-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-mystic-700/20 via-transparent to-transparent pointer-events-none"></div>
                 <h3 class="font-mystic text-2xl text-white mb-2 relative z-10">Laboratorio de Lectura</h3>
-                <p class="text-sm text-gray-400 mb-4 relative z-10">Genera una tirada aleatoria para practicar conexiones.</p>
+                <p class="text-sm text-gray-400 mb-4 relative z-10">Genera una tirada aleatoria. <strong class="text-mystic-gold">Toca cada carta</strong> para ver su significado completo.</p>
                 
                 <div class="relative z-10 mb-6">
-                    <img src="img/card_back.jpg" alt="Reverso de carta de tarot" class="card-back-preview mx-auto">
+                    <img src="img/card_back.jpg" alt="Reverso de carta de tarot" class="card-back-preview mx-auto" id="card-back-img">
                 </div>
 
                 <button id="btn-draw" class="relative z-10 bg-gradient-to-r from-mystic-700 to-purple-800 hover:from-mystic-gold/80 hover:to-amber-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all transform active:scale-95 duration-200">
                     Tirada Rápida de 3 Cartas
                 </button>
 
-                <div id="draw-results" class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 min-h-[120px]">
+                <div id="draw-results" class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 min-h-[20px]">
                     <!-- Cards will be injected here by JS -->
                 </div>
             </div>
 
-            <!-- Study Plan & Journal -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div class="bg-mystic-900/80 p-5 rounded-lg border border-white/5">
-                    <h4 class="font-mystic text-lg text-mystic-gold mb-3 flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        Plan de 8 Semanas
+            <!-- Reading History -->
+            <div class="bg-mystic-900/80 p-5 rounded-xl border border-white/5 mt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-mystic text-lg text-mystic-gold flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Historial de Tiradas
                     </h4>
-                    <ul class="text-sm text-gray-300 space-y-2">
-                        <li><span class="text-mystic-gold">Sem 1-2:</span> Mayores (El Loco a La Rueda)</li>
-                        <li><span class="text-mystic-gold">Sem 3-4:</span> Mayores (La Fuerza a El Mundo)</li>
-                        <li><span class="text-mystic-gold">Sem 5:</span> Palo de Bastos completo</li>
-                        <li><span class="text-mystic-gold">Sem 6:</span> Palo de Copas completo</li>
-                        <li><span class="text-mystic-gold">Sem 7:</span> Espadas, Oros y Cortes</li>
-                        <li><span class="text-mystic-gold">Sem 8:</span> Tiradas 1 y 3 cartas, Diario</li>
-                    </ul>
+                    <button id="btn-clear-history" class="text-xs text-red-400/60 hover:text-red-400 transition-colors" title="Borrar historial">Borrar todo</button>
                 </div>
+                <div id="history-container" class="space-y-3">
+                    <p class="text-sm text-gray-500 italic text-center py-4">Aún no has realizado ninguna tirada. ¡Prueba el Laboratorio!</p>
+                </div>
+            </div>
 
-                <div class="bg-mystic-900/80 p-5 rounded-lg border border-white/5">
-                    <h4 class="font-mystic text-lg text-mystic-gold mb-3 flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        Estructura del Diario
-                    </h4>
-                    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
-                        <li>Fecha y pregunta exacta.</li>
-                        <li>Tirada y posición de cada carta.</li>
-                        <li>Descripción visual inicial (sin libro).</li>
-                        <li>Significado consultado (núcleo).</li>
-                        <li>Interpretación final / síntesis.</li>
-                        <li>Acción o reflexión concreta.</li>
-                        <li>Revisión posterior (días después).</li>
-                    </ol>
+            <!-- Study Plan Interactive -->
+            <div class="bg-mystic-900/80 p-5 rounded-xl border border-white/5 mt-8">
+                <h4 class="font-mystic text-lg text-mystic-gold mb-2 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Plan de Estudio · 8 Semanas
+                </h4>
+                <p class="text-xs text-gray-400 mb-4">Marca cada tema cuando lo hayas estudiado. Tu progreso se guarda automáticamente.</p>
+                <div class="study-progress-bar mb-4"><div class="study-progress-fill" id="study-progress" style="width: 0%"></div></div>
+                <p class="text-xs text-mystic-gold mb-4" id="study-percent">0% completado</p>
+                <div class="space-y-2" id="study-plan">
+                    <!-- Generated by JS -->
                 </div>
+            </div>
+
+            <!-- Journal Template -->
+            <div class="bg-mystic-900/80 p-5 rounded-xl border border-white/5 mt-6">
+                <h4 class="font-mystic text-lg text-mystic-gold mb-3 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Cómo usar el Diario
+                </h4>
+                <p class="text-xs text-gray-400 mb-3">Después de cada tirada, anota en tu cuaderno siguiendo esta estructura:</p>
+                <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                    <li>Fecha y <strong class="text-white">pregunta exacta</strong> que formulaste.</li>
+                    <li>Tipo de tirada y <strong class="text-white">posición de cada carta</strong>.</li>
+                    <li>Descripción visual inicial <em class="text-gray-400">(sin consultar significados)</em>.</li>
+                    <li>Significado consultado <em class="text-gray-400">(Núcleo y Sombra)</em>.</li>
+                    <li>Tu <strong class="text-white">interpretación personal</strong> / síntesis.</li>
+                    <li>Una <strong class="text-white">acción concreta</strong> o reflexión.</li>
+                    <li>Revisión posterior <em class="text-gray-400">(vuelve días después a releer)</em>.</li>
+                </ol>
             </div>
         </section>
 
@@ -637,18 +666,21 @@
 
         document.querySelector(`[data-target="tab-manual"]`).classList.replace('text-gray-500', 'text-mystic-gold');
 
+        // === BUILD FULL DECK WITH ALL DATA ===
         const fullDeck = [];
-        mayores.forEach(m => fullDeck.push({ name: m.n, core: m.core }));
+        mayores.forEach(m => fullDeck.push({ name: m.n, core: m.core, shadow: m.shadow, sym: m.sym || '', read: m.read || '', note: '', isMajor: true }));
         ['bastos', 'copas', 'espadas', 'oros'].forEach(suit => {
-            menores[suit].forEach(c => fullDeck.push({ name: c.n, core: c.core }));
+            menores[suit].forEach(c => fullDeck.push({ name: c.n, core: c.core, shadow: c.shadow, note: c.note || '', sym: '', read: '', isMajor: false }));
         });
 
         const drawBtn = document.getElementById('btn-draw');
         const drawResults = document.getElementById('draw-results');
+        const cardBackImg = document.getElementById('card-back-img');
 
         drawBtn.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(50);
             drawResults.innerHTML = '';
+            if (cardBackImg) cardBackImg.style.display = 'none';
             
             const shuffled = [...fullDeck].sort(() => 0.5 - Math.random());
             const drawn = shuffled.slice(0, 3);
@@ -656,18 +688,137 @@
 
             drawn.forEach((card, index) => {
                 const cardDiv = document.createElement('div');
-                cardDiv.className = "bg-mystic-900 border border-mystic-gold/40 rounded-xl p-4 flex flex-col items-center justify-center min-h-[140px] tarot-card-draw shadow-[0_4px_10px_rgba(0,0,0,0.5)] relative";
+                cardDiv.className = "drawn-card bg-mystic-900 border border-mystic-gold/40 rounded-xl p-4 flex flex-col items-center justify-center min-h-[140px] tarot-card-draw shadow-[0_4px_10px_rgba(0,0,0,0.5)]";
                 cardDiv.style.animationDelay = `${index * 150}ms`;
                 
                 cardDiv.innerHTML = `
                     <span class="text-xs text-mystic-gold mb-2 uppercase tracking-wider">${positions[index]}</span>
                     <span class="font-mystic text-lg font-bold text-white text-center leading-tight mb-2">${card.name}</span>
-                    <span class="text-[10px] text-gray-400 text-center border-t border-mystic-700 pt-2 w-full">${card.core}</span>
+                    <span class="text-[10px] text-gray-400 text-center border-t border-mystic-700 pt-2 w-full mb-1">${card.core}</span>
+                    <span class="text-[9px] text-mystic-gold/50 mt-1">▼ toca para más</span>
+                    <div class="card-detail w-full mt-3 text-left text-xs space-y-2">
+                        ${card.sym ? `<p class="text-gray-400 italic">${card.sym}</p>` : ''}
+                        <p><strong class="text-white">Núcleo:</strong> <span class="text-gray-300">${card.core}</span></p>
+                        <p><strong class="text-red-400">Sombra:</strong> <span class="text-gray-400">${card.shadow}</span></p>
+                        ${card.read ? `<p class="text-blue-200 border-t border-mystic-700 pt-2 mt-2">${card.read}</p>` : ''}
+                        ${card.note ? `<p class="text-mystic-golddim italic border-t border-mystic-700 pt-2">${card.note}</p>` : ''}
+                    </div>
                 `;
+                cardDiv.addEventListener('click', () => cardDiv.classList.toggle('expanded'));
                 drawResults.appendChild(cardDiv);
             });
+
+            // Save to history
+            saveReading(drawn, positions);
         });
 
+        // === READING HISTORY ===
+        function getHistory() {
+            try { return JSON.parse(localStorage.getItem('tarot-rws-history') || '[]'); }
+            catch { return []; }
+        }
+        function saveHistory(hist) {
+            localStorage.setItem('tarot-rws-history', JSON.stringify(hist));
+        }
+        function saveReading(drawn, positions) {
+            const hist = getHistory();
+            const entry = {
+                id: Date.now(),
+                date: new Date().toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                cards: drawn.map((c, i) => ({ position: positions[i], name: c.name, core: c.core, shadow: c.shadow }))
+            };
+            hist.unshift(entry);
+            if (hist.length > 20) hist.pop(); // Keep last 20
+            saveHistory(hist);
+            renderHistory();
+        }
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            const hist = getHistory();
+            if (hist.length === 0) {
+                container.innerHTML = '<p class="text-sm text-gray-500 italic text-center py-4">Aún no has realizado ninguna tirada. ¡Prueba el Laboratorio!</p>';
+                return;
+            }
+            container.innerHTML = hist.map(entry => `
+                <details class="history-entry bg-mystic-800/50 rounded-lg border border-mystic-gold/10">
+                    <summary class="p-3 flex justify-between items-center cursor-pointer text-sm outline-none">
+                        <span class="text-gray-300"><span class="text-mystic-gold font-semibold">${entry.date}</span> — ${entry.cards.map(c => c.name.split('. ').pop()).join(' · ')}</span>
+                        <svg class="w-4 h-4 summary-chevron text-mystic-gold/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </summary>
+                    <div class="p-3 pt-0 border-t border-mystic-gold/10 space-y-2">
+                        ${entry.cards.map(c => `
+                            <div class="bg-mystic-900/50 rounded p-2">
+                                <p class="text-xs text-mystic-gold uppercase tracking-wider mb-1">${c.position}</p>
+                                <p class="font-mystic text-sm text-white">${c.name}</p>
+                                <p class="text-xs text-gray-300 mt-1"><strong>Núcleo:</strong> ${c.core}</p>
+                                <p class="text-xs text-gray-400"><strong class="text-red-400/70">Sombra:</strong> ${c.shadow}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </details>
+            `).join('');
+        }
+        renderHistory();
+
+        document.getElementById('btn-clear-history').addEventListener('click', () => {
+            if (confirm('¿Borrar todo el historial de tiradas?')) {
+                localStorage.removeItem('tarot-rws-history');
+                renderHistory();
+            }
+        });
+
+        // === INTERACTIVE STUDY PLAN ===
+        const studyItems = [
+            { id: 's1', label: 'Sem 1-2: Estudiar Mayores (El Loco → La Rueda)', tip: 'Abre la pestaña Arcanos y lee cada Arcano Mayor del 0 al X. Anota las 3 que más te resuenen.' },
+            { id: 's2', label: 'Sem 3-4: Estudiar Mayores (La Fuerza → El Mundo)', tip: 'Continúa del XI al XXI. Busca patrones y parejas entre cartas.' },
+            { id: 's3', label: 'Sem 5: Palo de Bastos completo (14 cartas)', tip: 'Estudia As-10 + Sota, Caballero, Reina, Rey de Bastos. Tema: acción y fuego.' },
+            { id: 's4', label: 'Sem 6: Palo de Copas completo (14 cartas)', tip: 'Estudia las 14 cartas de Copas. Tema: emociones y relaciones.' },
+            { id: 's5', label: 'Sem 7: Espadas + Oros + Figuras de Corte', tip: 'Completa los últimos dos palos. Compara las figuras de cada palo entre sí.' },
+            { id: 's6', label: 'Sem 8: Practicar tirada de 1 carta diaria', tip: 'Cada mañana saca 1 carta y anota tu primera impresión antes de consultar significados.' },
+            { id: 's7', label: 'Sem 8: Practicar tirada de 3 cartas', tip: 'Haz al menos 3 tiradas de 3 cartas durante la semana usando el Laboratorio.' },
+            { id: 's8', label: 'Sem 8: Iniciar tu Diario de Tarot', tip: 'Usa la estructura del diario que aparece abajo para registrar tus lecturas.' }
+        ];
+
+        function getStudyProgress() {
+            try { return JSON.parse(localStorage.getItem('tarot-rws-study') || '{}'); }
+            catch { return {}; }
+        }
+        function saveStudyProgress(progress) {
+            localStorage.setItem('tarot-rws-study', JSON.stringify(progress));
+        }
+        function renderStudyPlan() {
+            const container = document.getElementById('study-plan');
+            const progress = getStudyProgress();
+            container.innerHTML = studyItems.map(item => {
+                const checked = progress[item.id] || false;
+                return `
+                    <div class="study-item ${checked ? 'completed' : ''} flex items-start gap-3 bg-mystic-800/40 rounded-lg p-3 border border-mystic-gold/5">
+                        <input type="checkbox" class="study-check mt-0.5" id="${item.id}" ${checked ? 'checked' : ''} onchange="toggleStudy('${item.id}')">
+                        <div class="flex-1">
+                            <label for="${item.id}" class="text-sm text-gray-300 cursor-pointer block">${item.label}</label>
+                            <p class="text-[10px] text-gray-500 mt-1">💡 ${item.tip}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            updateStudyProgress();
+        }
+        window.toggleStudy = function(id) {
+            const progress = getStudyProgress();
+            progress[id] = !progress[id];
+            saveStudyProgress(progress);
+            renderStudyPlan();
+        };
+        function updateStudyProgress() {
+            const progress = getStudyProgress();
+            const done = studyItems.filter(i => progress[i.id]).length;
+            const pct = Math.round((done / studyItems.length) * 100);
+            document.getElementById('study-progress').style.width = pct + '%';
+            document.getElementById('study-percent').textContent = pct + '% completado (' + done + '/' + studyItems.length + ')';
+        }
+        renderStudyPlan();
+
+        // === MANIFEST ===
         const manifest = {
             "name": "Manual Tarot RWS",
             "short_name": "Tarot RWS",
@@ -675,24 +826,11 @@
             "display": "standalone",
             "background_color": "#0a0914",
             "theme_color": "#0a0914",
-            "description": "Manual offline del Tarot Rider-Waite-Smith",
-            "icons": [
-                {
-                    "src": 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23d4af37"><path d="M50 5 L90 25 L90 75 L50 95 L10 75 L10 25 Z"/></svg>',
-                    "sizes": "192x192",
-                    "type": "image/svg+xml"
-                }
-            ]
+            "description": "Manual interactivo del Tarot Rider-Waite-Smith",
+            "icons": [{ "src": 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23d4af37"><path d="M50 5 L90 25 L90 75 L50 95 L10 75 L10 25 Z"/></svg>', "sizes": "192x192", "type": "image/svg+xml" }]
         };
-        
-        // Uso de Data URI para el Manifest, más estable en ciertos entornos que un Blob.
-        const manifestDataUrl = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
-        document.getElementById('manifest-link').setAttribute('href', manifestDataUrl);
-
-        // FIX: Eliminamos el registro del Service Worker mediante Blob que causaba el error de protocolo.
-        // Los navegadores modernos bloquean Service Workers desde URLs blob por estrictas políticas de seguridad.
-        // Para tener PWA instalable sin servidor propio, basta con el Web App Manifest en la mayoría de móviles.
-        console.log('App Inicializada. (Service Worker omitido: el entorno actual restringe SW desde orígenes dinámicos, pero el Manifest permite instalar la App).');
+        document.getElementById('manifest-link').setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest)));
+        console.log('Tarot RWS inicializado correctamente.');
     </script>
 </body>
 </html>
