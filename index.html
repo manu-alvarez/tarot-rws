@@ -6,9 +6,20 @@
     <title>Manual de Tarot Rider-Waite-Smith</title>
     <meta name="description" content="Manual interactivo completo del Tarot Rider-Waite-Smith. 78 cartas con significados, simbología, tiradas y práctica. Laboratorio de lectura con tirada aleatoria.">
     
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/jpeg" href="img/Tarot%20RWS.jpeg">
+    <link rel="shortcut icon" type="image/jpeg" href="img/Tarot%20RWS.jpeg">
+    <link rel="apple-touch-icon" href="img/Tarot%20RWS.jpeg">
+    <link rel="apple-touch-icon-precomposed" href="img/Tarot%20RWS.jpeg">
+    
+    <meta property="og:title" content="Tarot RWS - Manual y Tiradas">
+    <meta property="og:description" content="Manual interactivo completo del Tarot Rider-Waite-Smith. 78 cartas, tiradas y lectura sintética.">
+    <meta property="og:image" content="img/Tarot%20RWS.jpeg">
+    
     <link rel="manifest" id="manifest-link">
     <meta name="theme-color" content="#0a0914">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Tarot RWS">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -189,7 +200,8 @@
 <body class="antialiased pb-24">
 
     <header class="sticky top-0 z-40 glass-panel border-b border-mystic-gold/20 shadow-lg shadow-mystic-900/50">
-        <div class="px-4 py-4 flex items-center justify-center">
+        <div class="px-4 py-3 flex items-center justify-center gap-3">
+            <img src="img/Tarot%20RWS.jpeg" alt="Logo Tarot RWS" class="w-8 h-8 rounded-full border border-mystic-gold/40 shadow-[0_0_10px_rgba(212,175,55,0.3)] object-cover">
             <h1 class="text-2xl font-bold text-center gold-gradient-text tracking-wider">Tarot RWS</h1>
         </div>
     </header>
@@ -1957,7 +1969,12 @@
             "background_color": "#0a0914",
             "theme_color": "#0a0914",
             "description": "Manual interactivo del Tarot Rider-Waite-Smith",
-            "icons": [{ "src": 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23d4af37"><path d="M50 5 L90 25 L90 75 L50 95 L10 75 L10 25 Z"/></svg>', "sizes": "192x192", "type": "image/svg+xml" }]
+            "icons": [
+                { "src": "img/Tarot%20RWS.jpeg", "sizes": "192x192", "type": "image/jpeg", "purpose": "any maskable" },
+                { "src": "img/Tarot%20RWS.jpeg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any maskable" },
+                { "src": "img/app_icon.jpeg", "sizes": "192x192", "type": "image/jpeg" },
+                { "src": "img/app_icon.jpeg", "sizes": "512x512", "type": "image/jpeg" }
+            ]
         };
         document.getElementById('manifest-link').setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest)));
         console.log('Tarot RWS inicializado correctamente.');
