@@ -180,6 +180,10 @@
             0% { opacity: 0; transform: translateY(40px) scale(0.9); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
+        /* Safe area support for iOS */
+        .pb-safe {
+            padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+        }
     </style>
 </head>
 <body class="antialiased pb-24">
@@ -392,17 +396,21 @@
                 <div class="bg-mystic-800 rounded-lg p-5 border-l-4 border-purple-500 shadow-md">
                     <h3 class="font-mystic text-xl text-white mb-2">Cruz Celta</h3>
                     <p class="text-sm text-gray-400 mb-3">Para preguntas profundas cuando ya dominas tiradas breves. La posición 10 muestra la tendencia actual, no un hecho inevitable.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-300">
-                        <div>1. Situación central</div>
-                        <div>6. Futuro cercano</div>
-                        <div>2. Cruce o desafío</div>
-                        <div>7. Tu enfoque actual</div>
-                        <div>3. Base inconsciente</div>
-                        <div>8. Entorno o influencias</div>
-                        <div>4. Pasado reciente</div>
-                        <div>9. Esperanzas y miedos</div>
-                        <div>5. Actitud consciente</div>
-                        <div class="font-bold text-mystic-gold">10. Dirección probable</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs text-gray-300">
+                        <div class="space-y-2">
+                            <div>1. Situación central</div>
+                            <div>2. Cruce o desafío</div>
+                            <div>3. Base inconsciente</div>
+                            <div>4. Pasado reciente</div>
+                            <div>5. Actitud consciente</div>
+                        </div>
+                        <div class="space-y-2">
+                            <div>6. Futuro cercano</div>
+                            <div>7. Tu enfoque actual</div>
+                            <div>8. Entorno o influencias</div>
+                            <div>9. Esperanzas y miedos</div>
+                            <div class="font-bold text-mystic-gold">10. Dirección probable</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -460,25 +468,25 @@
                 <h3 class="font-mystic text-xl text-white mb-4 relative z-10 text-center">Elige tu Tirada</h3>
                 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 relative z-10" id="spread-selector">
-                    <button onclick="selectSpread('1card')" data-spread="1card" class="spread-btn active bg-mystic-gold/20 border border-mystic-gold/40 rounded-xl p-3 text-center transition-all hover:bg-mystic-gold/30">
-                        <span class="text-2xl block mb-1">🃏</span>
-                        <span class="font-mystic text-sm text-mystic-gold block">1 Carta</span>
-                        <span class="text-[10px] text-gray-400">Sí/No · Consejo</span>
+                    <button onclick="selectSpread('1card')" data-spread="1card" class="spread-btn active bg-mystic-gold/20 border border-mystic-gold/40 rounded-xl p-3 flex flex-col items-center justify-center transition-all hover:bg-mystic-gold/30">
+                        <span class="text-2xl mb-1">🃏</span>
+                        <span class="font-mystic text-sm text-mystic-gold text-center">1 Carta</span>
+                        <span class="text-[10px] text-gray-400 mt-1 text-center">Consejo</span>
                     </button>
-                    <button onclick="selectSpread('3card')" data-spread="3card" class="spread-btn border border-white/10 rounded-xl p-3 text-center transition-all hover:bg-mystic-gold/10">
-                        <span class="text-2xl block mb-1">🔮</span>
-                        <span class="font-mystic text-sm text-mystic-gold block">3 Cartas</span>
-                        <span class="text-[10px] text-gray-400">Pasado · Presente · Futuro</span>
+                    <button onclick="selectSpread('3card')" data-spread="3card" class="spread-btn border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center transition-all hover:bg-mystic-gold/10">
+                        <span class="text-2xl mb-1">🔮</span>
+                        <span class="font-mystic text-sm text-mystic-gold text-center">3 Cartas</span>
+                        <span class="text-[10px] text-gray-400 mt-1 text-center">Pasado·Presente·Futuro</span>
                     </button>
-                    <button onclick="selectSpread('5card')" data-spread="5card" class="spread-btn border border-white/10 rounded-xl p-3 text-center transition-all hover:bg-mystic-gold/10">
-                        <span class="text-2xl block mb-1">✦</span>
-                        <span class="font-mystic text-sm text-mystic-gold block">5 Cartas</span>
-                        <span class="text-[10px] text-gray-400">Cruz Simple</span>
+                    <button onclick="selectSpread('5card')" data-spread="5card" class="spread-btn border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center transition-all hover:bg-mystic-gold/10">
+                        <span class="text-2xl mb-1">✦</span>
+                        <span class="font-mystic text-sm text-mystic-gold text-center">Cruz Simple</span>
+                        <span class="text-[10px] text-gray-400 mt-1 text-center">5 Cartas</span>
                     </button>
-                    <button onclick="selectSpread('celtic')" data-spread="celtic" class="spread-btn border border-white/10 rounded-xl p-3 text-center transition-all hover:bg-mystic-gold/10">
-                        <span class="text-2xl block mb-1">☽</span>
-                        <span class="font-mystic text-sm text-mystic-gold block">Cruz Celta</span>
-                        <span class="text-[10px] text-gray-400">10 cartas · Completa</span>
+                    <button onclick="selectSpread('celtic')" data-spread="celtic" class="spread-btn border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center transition-all hover:bg-mystic-gold/10">
+                        <span class="text-2xl mb-1">☽</span>
+                        <span class="font-mystic text-sm text-mystic-gold text-center">Cruz Celta</span>
+                        <span class="text-[10px] text-gray-400 mt-1 text-center">10 Cartas</span>
                     </button>
                 </div>
 
@@ -851,21 +859,54 @@
             '1card': {
                 count: 1,
                 positions: ['Respuesta / Consejo'],
-                description: '<strong class="text-mystic-gold">1 Carta — Consejo / Sí-No:</strong> Ideal para una respuesta directa. Formula una pregunta concreta y saca una carta. La carta te da la respuesta y el matiz que necesitas considerar.',
+                description: `
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <div class="flex-1">
+                            <strong class="text-mystic-gold block mb-1">1 Carta — Consejo / Sí-No</strong>
+                            Ideal para una respuesta directa. Formula una pregunta concreta y saca una carta. La carta te da la respuesta y el matiz que necesitas considerar.
+                        </div>
+                        <div class="flex justify-center items-center p-2 bg-mystic-900 rounded-lg shrink-0">
+                            <div class="w-8 h-12 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-xs">1</div>
+                        </div>
+                    </div>`,
                 btnText: 'Sacar 1 Carta',
                 gridClass: 'grid grid-cols-1 max-w-sm mx-auto gap-4'
             },
             '3card': {
                 count: 3,
                 positions: ['1. Pasado', '2. Presente', '3. Futuro'],
-                description: '<strong class="text-mystic-gold">3 Cartas — Pasado · Presente · Futuro:</strong> La tirada más usada. La primera carta refleja lo que pasó, la segunda lo que ocurre ahora, y la tercera hacia dónde se dirige. También puede leerse como Situación · Desafío · Consejo.',
+                description: `
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <div class="flex-1">
+                            <strong class="text-mystic-gold block mb-1">3 Cartas — Evolución</strong>
+                            La tirada más usada. La primera carta refleja lo que pasó, la segunda lo que ocurre ahora, y la tercera hacia dónde se dirige.
+                        </div>
+                        <div class="flex gap-2 p-2 bg-mystic-900 rounded-lg shrink-0">
+                            <div class="w-8 h-12 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-xs">1</div>
+                            <div class="w-8 h-12 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-xs">2</div>
+                            <div class="w-8 h-12 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-xs">3</div>
+                        </div>
+                    </div>`,
                 btnText: 'Sacar 3 Cartas',
                 gridClass: 'grid grid-cols-1 sm:grid-cols-3 gap-4'
             },
             '5card': {
                 count: 5,
                 positions: ['1. Presente', '2. Obstáculo', '3. Pasado', '4. Futuro cercano', '5. Resultado'],
-                description: '<strong class="text-mystic-gold">5 Cartas — Cruz Simple:</strong> Más profunda que las 3 cartas. La carta central es el presente, arriba el obstáculo, izquierda el pasado, derecha el futuro cercano, y abajo el resultado probable.',
+                description: `
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <div class="flex-1">
+                            <strong class="text-mystic-gold block mb-1">Cruz Simple — 5 Cartas</strong>
+                            Más profunda que las 3 cartas. Centro: presente. Arriba: obstáculo. Izquierda: pasado. Derecha: futuro cercano. Abajo: resultado.
+                        </div>
+                        <div class="grid grid-cols-3 grid-rows-3 gap-1 p-2 bg-mystic-900 rounded-lg shrink-0 place-items-center">
+                            <div></div><div class="w-6 h-9 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[10px]">2</div><div></div>
+                            <div class="w-6 h-9 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[10px]">3</div>
+                            <div class="w-6 h-9 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[10px]">1</div>
+                            <div class="w-6 h-9 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[10px]">4</div>
+                            <div></div><div class="w-6 h-9 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[10px]">5</div><div></div>
+                        </div>
+                    </div>`,
                 btnText: 'Sacar 5 Cartas',
                 gridClass: 'grid grid-cols-1 sm:grid-cols-3 gap-4'
             },
@@ -883,7 +924,30 @@
                     '9. Esperanzas y miedos',
                     '10. Resultado final'
                 ],
-                description: '<strong class="text-mystic-gold">Cruz Celta — 10 Cartas:</strong> La tirada más completa y tradicional. Cubre situación actual, desafíos, influencias del pasado y futuro, entorno, postura personal, miedos/esperanzas y resultado. Requiere más experiencia pero da una visión completa.',
+                description: `
+                    <div class="flex flex-col lg:flex-row items-center gap-4">
+                        <div class="flex-1">
+                            <strong class="text-mystic-gold block mb-1">Cruz Celta — 10 Cartas</strong>
+                            La tirada tradicional. El bloque izquierdo forma una cruz (situación, desafío, base, pasado, actitud, futuro) y la columna derecha forma el desarrollo (postura, entorno, miedos, resultado).
+                        </div>
+                        <div class="flex gap-4 p-2 bg-mystic-900 rounded-lg shrink-0">
+                            <!-- Left Cross -->
+                            <div class="grid grid-cols-3 gap-1 place-items-center" style="grid-template-rows: repeat(4, 1.75rem);">
+                                <div class="col-start-2 row-start-1"><div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">5</div></div>
+                                <div class="col-start-1 row-start-2 row-span-2 flex items-center"><div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">4</div></div>
+                                <div class="col-start-2 row-start-2 row-span-2 relative w-5 h-7 flex items-center justify-center"><div class="absolute w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">1</div><div class="absolute w-7 h-5 border border-mystic-gold/80 bg-mystic-900/90 rounded flex items-center justify-center text-mystic-gold text-[9px]">2</div></div>
+                                <div class="col-start-3 row-start-2 row-span-2 flex items-center"><div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">6</div></div>
+                                <div class="col-start-2 row-start-4"><div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">3</div></div>
+                            </div>
+                            <!-- Right Staff -->
+                            <div class="flex flex-col gap-1 justify-end">
+                                <div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">10</div>
+                                <div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">9</div>
+                                <div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">8</div>
+                                <div class="w-5 h-7 border border-mystic-gold/50 rounded flex items-center justify-center text-mystic-gold text-[9px]">7</div>
+                            </div>
+                        </div>
+                    </div>`,
                 btnText: 'Sacar 10 Cartas',
                 gridClass: 'grid grid-cols-1 sm:grid-cols-2 gap-4'
             }
